@@ -165,7 +165,7 @@ function updateMainPiece() {
     if(keys.has("ArrowUp")) {
         Body.set(mainPiece, "torque", .5);
     }
-    if(keys.has("KeyZ")) {
+    if(keys.has("KeyZ") || keys.has("KeyY")) {
         Body.set(mainPiece, "torque", -.5);
     }
     if(keys.has("ArrowDown")) {
@@ -251,15 +251,23 @@ var tallestTower = 2000;
 var waitingPieces = [];
 var spawnDelay = 0;
 function updateWaiting() {
-    if(waitingPieces[0] && waitingPieces[0].name == mainPiece?.name) {
-        var piece = waitingPieces.shift();
-        Body.set(piece, 'frictionAir', 0);
-        Composite.remove(engine.world, piece.pull);
+    // if(waitingPieces[0] && waitingPieces[0].name == mainPiece?.name) {
+    //     var piece = waitingPieces.shift();
+    //     Body.set(piece, 'frictionAir', 0);
+    //     Composite.remove(engine.world, piece.pull);
+    // }
+    for(let l = 0; l < waitingPieces.length; l++) {
+        if(l >= 0 && waitingPieces[l].name != order[l]) {
+            var [piece] = waitingPieces.splice(l, 1);
+            Body.set(piece, 'frictionAir', 0);
+            Composite.remove(engine.world, piece.pull);
+            break;
+        }
     }
 
     var len = Math.min(order.length, 5);
     if(spawnDelay) --spawnDelay;
-    else if(mainPiece && waitingPieces.length < len) {
+    else if(waitingPieces.length < len) {
         piece = createPiece(order[waitingPieces.length]);
 
         Body.set(piece, 'frictionAir', .02);
