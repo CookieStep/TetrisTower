@@ -1,6 +1,5 @@
 var canvas = document.createElement("canvas"),
     ctx = canvas.getContext("2d");
-
 var {
     Engine,
     Bodies,
@@ -185,7 +184,6 @@ var steps = 20;
 var pieceDelay = 0;
 function update() {
     if(order.length < 7) order.push(...shuffle(txt));
-    updateWaiting();
     if(pieceDelay) {
         --pieceDelay;
     }
@@ -193,6 +191,7 @@ function update() {
         mainPiece = summon();
         pieceDelay = 20;
     }
+    updateWaiting();
     if(mainPiece) {
         updateMainPiece();
     }
@@ -220,24 +219,29 @@ function update() {
             }
         }
     }
-    Render.world(render);
     {
         var canvas = render.canvas;
         var ctx = render.context;
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        {
+            ctx.strokeStyle = 'white';
+            ctx.beginPath();
+            ctx.moveTo(0, tallestTower);
+            ctx.lineTo(canvas.width, tallestTower);
+            ctx.stroke();
+        }
+        var bodies = Composite.allBodies(engine.world);
+        Render.bodies(render, bodies, ctx);
         ctx.fillStyle = 'white';
         ctx.font = '20px Arial'
         ctx.fillText("Pieces lost: " + piecesLost, 5, 30);
         ctx.fillText("Piece count: " + piecesUsed, 5, 60);
         ctx.fillText("Tallest tower: " + Math.floor((580 - tallestTower)*10)/100, 5, 90);
-        ctx.fillStyle = '#0005'
-        var y = tallestTower;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(800, y);
-        ctx.stroke();
     }
     requestAnimationFrame(update);
 }
+
 function getMotion(body) {
     return body.speed**2 + body.angularSpeed**2;
 }
@@ -255,7 +259,7 @@ function updateWaiting() {
 
     var len = Math.min(order.length, 5);
     if(spawnDelay) --spawnDelay;
-    else if(waitingPieces.length < len) {
+    else if(mainPiece && waitingPieces.length < len) {
         piece = createPiece(order[waitingPieces.length]);
 
         Body.set(piece, 'frictionAir', .02);
@@ -278,7 +282,7 @@ function updateWaiting() {
         Composite.add(engine.world, pull);
         piece.pull = pull;
         waitingPieces.push(piece);
-        spawnDelay = 10;
+        spawnDelay = 12;
     }
     for(let i = 0; i < waitingPieces.length; i++) {
         let piece = waitingPieces[i];
