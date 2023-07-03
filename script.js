@@ -38,7 +38,7 @@ function createPiece(piece) {
     };
 
     var options2 = () => ({
-        friction: .5,
+        friction: 1,
         frictionAir: .1,
         restitution: 0,
         mass: 3
@@ -183,6 +183,7 @@ var mainPiece;
 var steps = 20;
 var pieceDelay = 0;
 function update() {
+    setTimeout(update, 15);
     if(order.length < 7) order.push(...shuffle(txt));
     if(pieceDelay) {
         --pieceDelay;
@@ -239,7 +240,6 @@ function update() {
         ctx.fillText("Piece count: " + piecesUsed, 5, 60);
         ctx.fillText("Tallest tower: " + Math.floor((580 - tallestTower)*10)/100, 5, 90);
     }
-    requestAnimationFrame(update);
 }
 
 function getMotion(body) {
