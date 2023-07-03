@@ -163,10 +163,10 @@ function updateMainPiece() {
         Body.applyForce(mainPiece, mainPiece.position, {x: +spd, y: 0});
     }
     if(keys.has("ArrowUp")) {
-        Body.set(mainPiece, "torque", .5);
+        Body.set(mainPiece, "torque", .15);
     }
     if(keys.has("KeyZ") || keys.has("KeyY")) {
-        Body.set(mainPiece, "torque", -.5);
+        Body.set(mainPiece, "torque", -.15);
     }
     if(keys.has("ArrowDown")) {
         Body.set(mainPiece, "frictionAir", 0.01);
