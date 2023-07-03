@@ -184,7 +184,7 @@ var steps = 20;
 var pieceDelay = 0;
 function update() {
     setTimeout(update, 15);
-    if(order.length < 7) order.push(...shuffle(txt));
+    if(order.length < 3) order.push(...shuffle(txt));
     if(pieceDelay) {
         --pieceDelay;
     }
@@ -205,6 +205,7 @@ function update() {
             Composite.remove(engine.world, body);
             if(!body.upcoming) {
                 piecesLost += 1;
+                order.push(body.name);
             }
         }else{
             if(!body.isStatic && !body.upcoming) {
@@ -265,7 +266,7 @@ function updateWaiting() {
         }
     }
 
-    var len = Math.min(order.length, 5);
+    var len = order.length;
     if(spawnDelay) --spawnDelay;
     else if(waitingPieces.length < len) {
         piece = createPiece(order[waitingPieces.length]);
